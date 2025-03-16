@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sequence Results</title>
+    <style>
+        body {
+            font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(to bottom right, #1a1a2e, #16213e);
+            margin: 20px;
+            color: #e0e0e0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #252c38;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            border: 1px solid #3a3f4a;
+        }
+        h1 {
+            color: #00acc1;
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .section {
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #2e3542;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        .section:hover {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+        .section-header {
+            background: #00acc1;
+            color: #fff;
+            padding: 15px 20px;
+            font-size: 1.4em;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 500;
+            border-bottom: 2px solid #00838f;
+        }
+        .section-header:hover {
+            background: #00838f;
+        }
+        .section-content {
+            padding: 20px;
+            display: none;
+            background: #333b48;
+            border: 1px solid #3a3f4a;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+        }
+        .section-content.active {
+            display: block;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+            background: #2e3542;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #3a3f4a;
+        }
+        th {
+            background: #455066;
+            color: #b0bec5;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9em;
+        }
+        td {
+            background: #333b48;
+            color: #cfd8dc;
+        }
+        .feature-list {
+            margin: 10px 0;
+        }
+        .feature-item {
+            background: #374251;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        .feature-item h4 {
+            margin: 0 0 10px 0;
+            color: #80deea;
+            font-weight: 500;
+        }
+        pre {
+            background: #263238;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            color: #b0bec5;
+            white-space: pre-wrap;
+            word-break: break-all;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #3a3f4a;
+        }
+        a.back-link {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.2em;
+            font-weight: 600;
+            padding: 12px 25px;
+            background: #00acc1;
+            border-radius: 6px;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+        a.back-link:hover {
+            background: #00838f;
+            transform: translateY(-2px);
+        }
+        .error {
+            background: #d32f2f;
+            color: #fff;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 500;
+        }
+    </style>
+    <!-- Optional: Add Roboto and Fira Code fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>Sequence Results</h1>
+        
+        {% if nucleotide_result %}
+            {% if nucleotide_result.error %}
+                <div class="section">
+                    <div class="section-header">Nucleotide Sequence</div>
+                    <div class="section-content active">
+                        <div class="error">{{ nucleotide_result.error }}</div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="section">
+                    <div class="section-header">Nucleotide Sequence - Basic Info</div>
+                    <div class="section-content">
+                        <table>
+                            <tr><th>ID</th><td>{{ nucleotide_result.ID }}</td></tr>
+                            <tr><th>Description</th><td>{{ nucleotide_result.Description }}</td></tr>
+                            <tr><th>Length</th><td>{{ nucleotide_result.Length }} nucleotides</td></tr>
+                            <tr><th>Genomic Start Position</th><td>{{ nucleotide_result.Start_Position }}</td></tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="section">
+                    <div class="section-header">Nucleotide Annotations</div>
+                    <div class="section-content">
+                        <table>
+                            {% for key, value in nucleotide_result.Annotations.items() %}
+                                <tr><th>{{ key }}</th><td>{{ value }}</td></tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+                <div class="section">
+                    <div class="section-header">Nucleotide Features</div>
+                    <div class="section-content">
+                        <div class="feature-list">
+                            {% for feature in nucleotide_result.Features %}
+                                <div class="feature-item">
+                                    <h4>Type: {{ feature.Type }} (Location: {{ feature.Location }})</h4>
+                                    <table>
+                                        <tr><th>Strand</th><td>{{ feature.Strand }}</td></tr>
+                                        {% for key, value in feature.Qualifiers.items() %}
+                                            <tr><th>{{ key }}</th><td>{{ value }}</td></tr>
+                                        {% endfor %}
+                                        {% if feature.Location_Parts|length > 1 %}
+                                            <tr><th>Location Parts</th><td>{{ feature.Location_Parts }}</td></tr>
+                                        {% endif %}
+                                    </table>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="section">
+                    <div class="section-header">Nucleotide Sequence</div>
+                    <div class="section-content">
+                        <pre>{{ nucleotide_result.Sequence[:100] }}... (first 100 nucleotides, total length: {{ nucleotide_result.Length }})</pre>
+                    </div>
+                </div>
+                <div class="section">
+                    <div class="section-header">Nucleotide Full Record (Raw GenBank)</div>
+                    <div class="section-content">
+                        <pre>{{ nucleotide_result.Full_Record[:500] }}... (showing first 500 characters)</pre>
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+
+        {% if protein_result %}
+            {% if protein_result.error %}
+                <div class="section">
+                    <div class="section-header">Protein Sequence</div>
+                    <div class="section-content active">
+                        <div class="error">{{ protein_result.error }}</div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="section">
+                    <div class="section-header">Protein Sequence - Basic Info</div>
+                    <div class="section-content">
+                        <table>
+                            <tr><th>ID</th><td>{{ protein_result.ID }}</td></tr>
+                            <tr><th>Description</th><td>{{ protein_result.Description }}</td></tr>
+                            <tr><th>Length</th><td>{{ protein_result.Length }} amino acids</td></tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="section">
+                    <div class="section-header">Protein Annotations</div>
+                    <div class="section-content">
+                        <table>
+                            {% for key, value in protein_result.Annotations.items() %}
+                                <tr><th>{{ key }}</th><td>{{ value }}</td></tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+                <div class="section">
+                    <div class="section-header">Protein Features</div>
+                    <div class="section-content">
+                        <div class="feature-list">
+                            {% for feature in protein_result.Features %}
+                                <div class="feature-item">
+                                    <h4>Type: {{ feature.Type }} (Location: {{ feature.Location }})</h4>
+                                    <table>
+                                        <tr><th>Strand</th><td>{{ feature.Strand }}</td></tr>
+                                        {% for key, value in feature.Qualifiers.items() %}
+                                            <tr><th>{{ key }}</th><td>{{ value }}</td></tr>
+                                        {% endfor %}
+                                        {% if feature.Location_Parts|length > 1 %}
+                                            <tr><th>Location Parts</th><td>{{ feature.Location_Parts }}</td></tr>
+                                        {% endif %}
+                                    </table>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="section">
+                    <div class="section-header">Protein Sequence</div>
+                    <div class="section-content">
+                        <pre>{{ protein_result.Sequence[:100] }}... (first 100 amino acids, total length: {{ protein_result.Length }})</pre>
+                    </div>
+                </div>
+                <div class="section">
+                    <div class="section-header">Protein Full Record (Raw GenBank)</div>
+                    <div class="section-content">
+                        <pre>{{ protein_result.Full_Record[:500] }}... (showing first 500 characters)</pre>
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+        
+        <a href="/" class="back-link">Back to Search</a>
+    </div>
+
+    <script>
+        document.querySelectorAll('.section-header').forEach(header => {
+            header.addEventListener('click', function() {
+                const content = this.nextElementSibling;
+                content.classList.toggle('active');
+            });
+        });
+        document.querySelectorAll('.section-content')[0].classList.add('active');
+    </script>
+</body>
+</html>
